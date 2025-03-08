@@ -21,7 +21,7 @@ def download(request):
             return JsonResponse({"error": "No URL provided"}, status=400)
 
         try:
-            loader = instaloader.Instaloader()
+            loader = instaloader.Instaloader(download_pictures=False, download_video_thumbnails=False)
 
             shortcode = post_url.split("/")[-2]
 
