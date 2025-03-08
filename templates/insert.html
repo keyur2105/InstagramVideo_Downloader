@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Video Downloader</title>
+
+    <!-- ✅ Use TailwindCSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* ✅ Custom Animation for the Download Button */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-pulse-custom {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex justify-center items-center h-screen">
+
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center">
+        <h1 class="text-3xl font-bold mb-4 animate-bounce">🎥 Instagram Video Downloader</h1>
+        
+        <input type="text" id="urlInput" placeholder="Enter Instagram URL"
+            class="w-full p-2 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-400 text-black">
+
+        <button onclick="downloadVideo()"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mt-4 animate-pulse-custom">
+            🚀 Download Now
+        </button>
+
+        <p id="statusMessage" class="mt-4 text-green-400 hidden">Downloading...</p>
+    </div>
+
+    <!-- ✅ JavaScript to Send Request to Django View -->
+    <script>
+        function downloadVideo() {
+            let url = document.getElementById("urlInput").value;
+            let statusMessage = document.getElementById("statusMessage");
+
+            if (!url.trim()) {
+                alert("Please enter a valid Instagram URL!");
+                return;
+            }
+
+            statusMessage.classList.remove("hidden");
+            statusMessage.textContent = "⏳ Downloading...";
+
+            fetch(`/download/?url=${encodeURIComponent(url)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        statusMessage.textContent = "❌ Error: " + data.error;
+                        statusMessage.classList.add("text-red-500");
+                    } else {
+                        statusMessage.textContent = "✅ Video downloaded successfully!";
+                        statusMessage.classList.add("text-green-500");
+                    }
+                })
+                .catch(error => {
+                    statusMessage.textContent = "⚠️ An error occurred!";
+                    statusMessage.classList.add("text-yellow-500");
+                });
+        }
+    </script>
+
+</body>
+</html>
