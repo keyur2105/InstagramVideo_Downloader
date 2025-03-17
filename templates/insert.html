@@ -19,12 +19,22 @@
         .animate-pulse-custom {
             animation: pulse 1.5s infinite;
         }
+
+        /* ✅ Custom Animation for the Title */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-bounce-custom {
+            animation: bounce 2s infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white flex justify-center items-center h-screen">
 
     <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center">
-        <h1 class="text-3xl font-bold mb-4 animate-bounce">🎥 Instagram Video Downloader</h1>
+        <h1 class="text-3xl font-bold mb-4 animate-bounce-custom">🎥 Instagram Video Downloader</h1>
         
         <input type="text" id="urlInput" placeholder="Enter Instagram URL"
             class="w-full p-2 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-400 text-black">
@@ -50,6 +60,7 @@
 
             statusMessage.classList.remove("hidden");
             statusMessage.textContent = "⏳ Downloading...";
+            statusMessage.classList.remove("text-red-500", "text-green-500", "text-yellow-500");
 
             fetch(`/download/?url=${encodeURIComponent(url)}`)
                 .then(response => response.json())

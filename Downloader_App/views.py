@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse
 from django.http import JsonResponse
 import instaloader
 import os
@@ -21,8 +21,9 @@ def download(request):
             return JsonResponse({"error": "No URL provided"}, status=400)
 
         try:
-            loader = instaloader.Instaloader(download_pictures=False, download_video_thumbnails=False)
-
+            
+            loader = instaloader.Instaloader()
+            
             shortcode = post_url.split("/")[-2]
 
             if not shortcode:
@@ -31,7 +32,6 @@ def download(request):
             post = instaloader.Post.from_shortcode(loader.context, shortcode)
             
             os.chdir(DownloadFolder)
-            
             loader.download_post(post, target="videos") 
             
             listOFDirectory = os.listdir(path=str(Path.home() / "Downloads" / "Instagram" / "videos"))
@@ -39,9 +39,9 @@ def download(request):
             
             for file in listOFDirectory:
                 path = str(Path.home() / "Downloads" / "Instagram" / "videos")
+                file_path = os.path.join(path, file)
                 try:
                     if not file.endswith(".mp4"):
-                        file_path = os.path.join(path, file)
                         os.remove(path=file_path)
                 except Exception as e:
                     return JsonResponse({"Error": str(e)})
